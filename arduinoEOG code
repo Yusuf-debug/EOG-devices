@@ -1,0 +1,44 @@
+/////////////ARDUINO CODE FOR THIS DEVICE only for arduino leonardo/////////////////////////
+
+
+#include "Keyboard.h"
+const int analogPin = A1;    // pin that the sensor is attached to
+const int ledPin = 12;// pin that the LED is attached to
+const int ledPin2 = 13;
+const int threshold1 = 260; 
+const int threshold2 = 300;// an arbitrary threshold level that's in the range of the analog input
+// initialize the LED pin as an output:
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(2, INPUT_PULLUP);
+  // Keyboard.begin();
+  pinMode(ledPin, OUTPUT);
+  // initialize serial communications:
+  Serial.begin(9600);
+}
+void loop() {
+// put your main code here, to run repeatedly:
+float analogValue;
+float asa = analogRead(analogPin);
+analogValue=(0.2846*analogValue+0.7154*asa)+250;
+//Filter LPF 20 Hz.
+//  if the analog value is high enough, turn on the LED:
+  if (analogValue > threshold2) {
+    digitalWrite(ledPin, HIGH);//lampu12 urip
+    digitalWrite(ledPin2, LOW);//lampu13 mati
+    Keyboard.press(KEY_LEFT_ARROW ); 
+    Keyboard.release(KEY_RIGHT_ARROW);} 
+  else if (analogValue  < threshold1  ) 
+  { digitalWrite(ledPin, LOW);//lampu 12 mati
+    digitalWrite(ledPin2, LOW);//lampu 13 mati
+    Keyboard.release(KEY_RIGHT_ARROW);
+    Keyboard.release(KEY_LEFT_ARROW);}
+  else if (threshold1 < analogValue < threshold2) {
+    digitalWrite(ledPin, LOW);//lampu 12 mati
+    digitalWrite(ledPin2, HIGH);//lampu 13 hidup }  
+    Keyboard.press(KEY_RIGHT_ARROW );
+    Keyboard.release(KEY_LEFT_ARROW);} 
+Serial.println(analogValue);
+ delay(1000);    }  
+
+
